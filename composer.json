@@ -1,0 +1,25 @@
+{
+    "name": "nasext/thumbnail",
+    "type": "library",
+    "description": "Thumbnail for Nette Framework",
+    "keywords": ["nette", "nasext", "Thumbnail"],
+    "license": ["MIT"],
+    "authors": [
+        {
+            "name": "Dusan Hudak"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "nette/di": "~2.3",
+        "nette/utils": "~2.2",
+        "latte/latte": "~2.3",
+        "nette/application": "~2.3",
+        "nette/http": "~2.3"
+    },
+    "autoload": {
+        "psr-0": {
+            "NasExt\\Thumbnail\\": "src/"
+        }
+    }
+}
