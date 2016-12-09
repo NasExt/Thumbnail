@@ -20,7 +20,7 @@ class ThumbnailExtension extends CompilerExtension {
 
 	/** @var array */
 	private $defaults = [
-		'thumbsDir' => '%wwwDir%',
+		'thumbsDir' => '%wwwDir%/thumbs',
 		'prependRoutesToRouter' => TRUE,
 		'routes' => [],
 		'storages' => [],
