@@ -77,6 +77,18 @@ class Macros extends MacroSet {
 	public function macroSrc(MacroNode $node, PhpWriter $writer) {
 		$absolute = substr($node->args, 0, 2) === '//' ? '//' : '';
 		$args = $absolute ? substr($node->args, 2) : $node->args;
-		return $writer->write('echo %escape(%modify($_presenter->link("' . $absolute . ':Nette:Micro:", $template->imageLink()->getParams(NasExt\Thumbnail\Latte\Macros::prepareArguments([' . $args . '])))))');
+		return $writer->write(
+			'echo %escape(
+				%modify(
+					$_presenter->link(
+						"' . $absolute . ':Nette:Micro:",
+						call_user_func(
+							($template && method_exists($template, "imageLink") ? $template->imageLink : $this->filters->imageLink),
+							NasExt\Thumbnail\Latte\Macros::prepareArguments([' . $args . '])
+						)
+					)
+				)
+			)'
+		);
 	}
 }

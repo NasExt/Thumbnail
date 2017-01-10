@@ -26,9 +26,10 @@ final class Helpers extends Object {
 	}
 
 	/**
-	 * @return ImagesLoader
+	 * @param array $arguments
+	 * @return array|string
 	 */
-	public function imageLink() {
-		return $this->imagesLoader;
+	public function imageLink($arguments) {
+		return $this->imagesLoader->getParams($arguments);
 	}
 }
