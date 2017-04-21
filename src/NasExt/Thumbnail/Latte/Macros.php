@@ -27,35 +27,6 @@ class Macros extends MacroSet {
 	}
 
 	/**
-	 * @param array $macro
-	 * @return array
-	 */
-	public static function prepareArguments(array $macro) {
-		preg_match("/\\b((?P<storage>[a-zA-Z0-9]+)::)?(?:(?<namespace>[a-zA-Z0-9-_\\/\\\\\\:]+)[\\/\\\\])?(?<name>[a-zA-Z0-9-_]+).(?P<extension>[a-zA-Z]{3}+)/i", $macro[0], $matches);
-
-		$arguments = array(
-			'storage' => isset($matches['storage']) && !empty($matches['storage']) ? $matches['storage'] : NULL,
-			'namespace' => isset($matches['namespace']) && trim(trim($matches['namespace']), '/') ? $matches['namespace'] : NULL,
-			'filename' => isset($matches['name']) && isset($matches['extension']) ? $matches['name'] . '.' . $matches['extension'] : NULL,
-			'size' => (isset($macro[1]) && !empty($macro[1])) ? $macro[1] : NULL,
-			'algorithm' => (isset($macro[2]) && !empty($macro[2])) ? $macro[2] : NULL,
-		);
-
-		unset($macro[0]);
-
-		if (array_key_exists(1, $macro)) {
-			unset($macro[1]);
-		}
-
-		if (array_key_exists(2, $macro)) {
-			unset($macro[2]);
-		}
-
-		$arguments['parameters'] = $macro;
-		return $arguments;
-	}
-
-	/**
 	 * @param string $name
 	 * @param Macros $macros
 	 */
@@ -80,13 +51,10 @@ class Macros extends MacroSet {
 		return $writer->write(
 			'echo %escape(
 				%modify(
-					$_presenter->link(
-						"' . $absolute . ':Nette:Micro:",
-						call_user_func(
+					call_user_func(
 							($template && method_exists($template, "imageLink") ? $template->imageLink : $this->filters->imageLink),
-							NasExt\Thumbnail\Latte\Macros::prepareArguments([' . $args . '])
+							[' . $args . ']
 						)
-					)
 				)
 			)'
 		);

@@ -8,28 +8,26 @@
 
 namespace NasExt\Thumbnail\Templating;
 
-use NasExt\Thumbnail\ImagesLoader;
+use NasExt\Thumbnail\LinkGenerator;
 use Nette\Object;
 
 final class Helpers extends Object {
 
-	/**
-	 * @var ImagesLoader
-	 */
-	private $imagesLoader;
+	/** @var LinkGenerator */
+	private $linkGenerator;
 
 	/**
-	 * @param ImagesLoader $imagesLoader
+	 * @param LinkGenerator $linkGenerator
 	 */
-	public function __construct(ImagesLoader $imagesLoader) {
-		$this->imagesLoader = $imagesLoader;
+	public function __construct(LinkGenerator $linkGenerator) {
+		$this->linkGenerator = $linkGenerator;
 	}
 
 	/**
 	 * @param array $arguments
-	 * @return array|string
+	 * @return string
 	 */
 	public function imageLink($arguments) {
-		return $this->imagesLoader->getParams($arguments);
+		return $this->linkGenerator->link($arguments);
 	}
 }

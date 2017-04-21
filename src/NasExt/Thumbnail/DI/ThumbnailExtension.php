@@ -8,9 +8,10 @@
 
 namespace NasExt\Thumbnail\DI;
 
-use DotBlue\WebImages\InvalidConfigException;
+
 use Nas\CmsModule\AdminModule\Controls\InvalidArgumentException;
 use NasExt\Thumbnail\Helpers;
+use NasExt\Thumbnail\LinkGenerator;
 use Nette\DI\CompilerExtension;
 use Nette\DI\ServiceDefinition;
 use Nette\Utils\AssertionException;
@@ -33,6 +34,9 @@ class ThumbnailExtension extends CompilerExtension {
 
 		$imagesLoader = $builder->addDefinition($this->prefix('imagesLoader'))
 			->setClass('NasExt\Thumbnail\ImagesLoader', [$config['thumbsDir']]);
+
+		$builder->addDefinition($this->prefix('linkGenerator'))
+			->setClass(LinkGenerator::class);
 
 		// Create validator
 		$validator = $builder->addDefinition($this->prefix('validator'))
@@ -82,7 +86,7 @@ class ThumbnailExtension extends CompilerExtension {
 
 		// Prepare storages
 		if (count($config['storages']) === 0) {
-			throw new InvalidConfigException("You have to register at least one IStorage in '" . $this->prefix('storages') . "' directive.");
+			throw new \NasExt\Framework\DI\InvalidArgumentException("You have to register at least one IStorage in '" . $this->prefix('storages') . "' directive.");
 		}
 
 		foreach ($config['storages'] as $name => $storage) {
@@ -96,7 +100,7 @@ class ThumbnailExtension extends CompilerExtension {
 		// Register template helper for ImagesLoader
 		$builder->addDefinition($this->prefix('helpers'))
 			->setClass('NasExt\Thumbnail\Templating\Helpers')
-			->setFactory($this->prefix('@imagesLoader') . '::createTemplateHelpers')
+			->setFactory($this->prefix('@linkGenerator') . '::createTemplateHelpers')
 			->setInject(FALSE);
 	}
 

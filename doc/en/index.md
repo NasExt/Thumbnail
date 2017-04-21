@@ -70,6 +70,13 @@ Parameters of this macro are:
 
 For resizing (third argument) you can use these keywords - `fit`, `fill`, `exact`, `stretch`, `shrink_only`. For details see comments above [these constants](http://api.nette.org/2.0/source-common.Image.php.html#105)
 
+
+## Use in presenter, control...
+Inject `\NasExt\Thumbnail\LinkGenerator` and use
+```php
+$this->thumbnailLinkGenerator->link(array('someStorage::products/filename.jpg', '200x200', 'fill', array('someUrlParam' => 'someurlValue')))
+```
+
 -----
 
 Repository [http://github.com/nasext/thumbnail](http://github.com/nasext/thumbnail).

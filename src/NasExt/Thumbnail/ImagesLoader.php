@@ -9,12 +9,12 @@
 namespace NasExt\Thumbnail;
 
 use NasExt\Thumbnail\Helpers\Converters;
-use NasExt\Thumbnail\Templating\Helpers;
 use Nette\Application\BadRequestException;
 use Nette\Http\IRequest;
 use Nette\Http\IResponse;
 use Nette\InvalidArgumentException;
 use Nette\Object;
+use Nette\Utils\Image;
 
 final class ImagesLoader extends Object {
 
@@ -34,10 +34,10 @@ final class ImagesLoader extends Object {
 	private $validator;
 
 	/**
-	 * @param           $thumbsDir
-	 * @param IRequest  $httpRequest
-	 * @param IResponse $httpResponse
-	 * @param Validator $validator
+	 * @param               $thumbsDir
+	 * @param IRequest      $httpRequest
+	 * @param IResponse     $httpResponse
+	 * @param Validator     $validator
 	 */
 	public function __construct($thumbsDir, IRequest $httpRequest, IResponse $httpResponse, Validator $validator) {
 		$this->thumbsDir = $thumbsDir;
@@ -51,7 +51,6 @@ final class ImagesLoader extends Object {
 	 * @return array|string
 	 */
 	public function getParams(array $arguments) {
-
 		try {
 			$storageName = isset($arguments['storage']) ? $arguments['storage'] : key($this->storages);
 			$size = Converters::createSizeString($arguments['size']);
@@ -117,7 +116,15 @@ final class ImagesLoader extends Object {
 		if (!$success) {
 			throw new BadRequestException;
 		}
-		$image->send();
+
+		$type = Image::JPEG;
+		if ($request->getExtension() == 'png') {
+			$type = Image::PNG;
+		} elseif ($request->getExtension() == 'gif') {
+			$type = Image::GIF;
+		}
+
+		$image->send($type);
 		exit;
 	}
 
@@ -139,13 +146,6 @@ final class ImagesLoader extends Object {
 	 */
 	public function addStorage($name, IStorage $storage) {
 		$this->storages[(string)$name] = $storage;
-	}
-
-	/**
-	 * @return Helpers
-	 */
-	public function createTemplateHelpers() {
-		return new Helpers($this);
 	}
 }
 
