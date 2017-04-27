@@ -68,8 +68,12 @@ final class LinkGenerator extends Object {
 	 */
 	public function link($arguments, $destination = 'Nette:Micro:') {
 		$arguments = self::prepareArguments($arguments);
-		$params = $this->imagesLoader->getParams($arguments);
-		return $this->linkGenerator->link($destination, $params);
+		try {
+			$params = $this->imagesLoader->getParams($arguments);
+			return $this->linkGenerator->link($destination, $params);
+		} catch (\Exception $e) {
+			return '#error: ' . $e->getMessage();
+		}
 	}
 
 	/**

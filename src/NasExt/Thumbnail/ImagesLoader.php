@@ -49,35 +49,30 @@ final class ImagesLoader extends Object {
 	/**
 	 * @param array $arguments
 	 * @return array|string
+	 * @throws NotAllowedImageException
 	 */
 	public function getParams(array $arguments) {
-		try {
-			$storageName = isset($arguments['storage']) ? $arguments['storage'] : key($this->storages);
-			$size = Converters::createSizeString($arguments['size']);
-			$algorithm = Converters::createAlgorithmString($arguments['algorithm']);
-			$namespace = $this->getStorage($storageName)->getNamespace($arguments['namespace']);
-			$file = new \SplFileInfo($arguments['filename']);
-			list($width, $height) = Converters::parseSizeString($arguments['size']);
+		$storageName = isset($arguments['storage']) ? $arguments['storage'] : key($this->storages);
+		$size = Converters::createSizeString($arguments['size']);
+		$algorithm = Converters::createAlgorithmString($arguments['algorithm']);
+		$namespace = $this->getStorage($storageName)->getNamespace($arguments['namespace']);
+		$file = new \SplFileInfo($arguments['filename']);
+		list($width, $height) = Converters::parseSizeString($arguments['size']);
 
-			if ($size !== 'original' && !$this->validator->validate($width, $height, $algorithm, $storageName)) {
-				throw new NotAllowedImageException(sprintf('Size "%s" of image "%s" in storage "%s" is not allowed in defined rules', $size . '-' . $algorithm, (($namespace === NULL ? NULL : $namespace . DIRECTORY_SEPARATOR) . $arguments['filename']), $storageName));
-			}
-
-			$params = array(
-				'storage' => $storageName,
-				'namespace' => $namespace,
-				'filename' => basename($file->getBasename(), '.' . $file->getExtension()),
-				'extension' => $file->getExtension(),
-				'size' => $size,
-				'algorithm' => $algorithm,
-			);
-
-			$params = array_merge($arguments['parameters'], $params);
-
-			return $params;
-		} catch (\Exception $e) {
-			return '#error: ' . $e->getMessage();
+		if ($size !== 'original' && !$this->validator->validate($width, $height, $algorithm, $storageName)) {
+			throw new NotAllowedImageException(sprintf('Size "%s" of image "%s" in storage "%s" is not allowed in defined rules', $size . '-' . $algorithm, (($namespace === NULL ? NULL : $namespace . DIRECTORY_SEPARATOR) . $arguments['filename']), $storageName));
 		}
+
+		$params = array(
+			'storage' => $storageName,
+			'namespace' => $namespace,
+			'filename' => basename($file->getBasename(), '.' . $file->getExtension()),
+			'extension' => $file->getExtension(),
+			'size' => $size,
+			'algorithm' => $algorithm,
+		);
+
+		return  array_merge($arguments['parameters'], $params);
 	}
 
 	/**
