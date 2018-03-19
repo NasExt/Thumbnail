@@ -9,9 +9,11 @@
 namespace NasExt\Thumbnail;
 
 use Nette\InvalidArgumentException;
-use Nette\Object;
+use Nette\SmartObject;
 
-class Validator extends Object {
+class Validator {
+
+	use SmartObject;
 
 	/** @var array */
 	private $rules = [];

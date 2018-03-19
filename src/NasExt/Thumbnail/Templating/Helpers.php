@@ -9,9 +9,11 @@
 namespace NasExt\Thumbnail\Templating;
 
 use NasExt\Thumbnail\LinkGenerator;
-use Nette\Object;
+use Nette\SmartObject;
 
-final class Helpers extends Object {
+final class Helpers {
+
+	use SmartObject;
 
 	/** @var LinkGenerator */
 	private $linkGenerator;

@@ -13,10 +13,12 @@ use Nette\Application\BadRequestException;
 use Nette\Http\IRequest;
 use Nette\Http\IResponse;
 use Nette\InvalidArgumentException;
-use Nette\Object;
+use Nette\SmartObject;
 use Nette\Utils\Image;
 
-final class ImagesLoader extends Object {
+final class ImagesLoader {
+
+	use SmartObject;
 
 	/** @var IStorage[] */
 	private $storages = array();

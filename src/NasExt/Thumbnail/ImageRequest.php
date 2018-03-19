@@ -8,10 +8,12 @@
 
 namespace NasExt\Thumbnail;
 
-use Nette\Object;
+use Nette\SmartObject;
 
-class ImageRequest extends Object
+class ImageRequest
 {
+	use SmartObject;
+	
 	/** @var string */
 	private $storage;
 

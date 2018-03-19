@@ -8,10 +8,12 @@
 
 namespace NasExt\Thumbnail;
 
-use Nette\Object;
 use NasExt\Thumbnail\Templating\Helpers;
+use Nette\SmartObject;
 
-final class LinkGenerator extends Object {
+final class LinkGenerator {
+
+	use SmartObject;
 
 	/** @var  ImagesLoader */
 	private $imagesLoader;
