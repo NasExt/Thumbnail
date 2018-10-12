@@ -20,6 +20,12 @@ interface IStorage {
 	public function getImage(ImageRequest $request);
 
 	/**
+	 * @param ImageRequest $request
+	 * @return bool
+	 */
+	public function isAllowed(ImageRequest $request);
+
+	/**
 	 * @param string $namespace
 	 * @return string|NULL
 	 */

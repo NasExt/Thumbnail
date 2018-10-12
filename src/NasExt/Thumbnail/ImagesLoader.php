@@ -77,6 +77,37 @@ final class ImagesLoader {
 		return  array_merge($arguments['parameters'], $params);
 	}
 
+    /**
+     * @param ImageRequest $request
+     */
+    public function loadImageFromCache(ImageRequest $request)
+    {
+        $destination = $this->getDestination();
+        if (is_file($destination)) {
+
+            $filename = basename($destination);
+            $fileExtension = strtolower(substr(strrchr($filename, "."), 1));
+
+            switch ($fileExtension) {
+                case "gif":
+                    $ctype = "image/gif";
+                    break;
+                case "png":
+                    $ctype = "image/png";
+                    break;
+                case "jpeg":
+                case "jpg":
+                    $ctype = "image/jpeg";
+                    break;
+                default:
+            }
+
+            $this->httpResponse->setHeader('Content-Type', $ctype);
+            readfile($destination);
+            exit;
+        }
+    }
+
 	/**
 	 * @param ImageRequest $request
 	 * @throws BadRequestException
@@ -94,6 +125,14 @@ final class ImagesLoader {
 			}
 
 			$storage = $this->getStorage($request->getStorage());
+
+			if ($storage->isAllowed($request) === false) {
+				throw new NotAllowedLoadImageException('You do not have assess to this file!');
+			}
+
+			// try load image from cache
+			$this->loadImageFromCache($request);
+
 			$image = $storage->getImage($request);
 		} catch (\Exception $e) {
 			$this->httpResponse->setHeader('Content-Type', 'image/jpeg');
@@ -101,7 +140,7 @@ final class ImagesLoader {
 			exit;
 		}
 
-		$destination = $this->thumbsDir . $this->httpRequest->getUrl()->getPath();
+		$destination = $this->getDestination();
 		$dirName = dirname($destination);
 		if (!is_dir($dirName)) {
 			$success = @mkdir($dirName, 0777, TRUE);
@@ -126,6 +165,13 @@ final class ImagesLoader {
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getDestination(){
+		return $this->thumbsDir . $this->httpRequest->getUrl()->getPath();
+	}
+
+	/**
 	 * @param string $name
 	 * @return IStorage
 	 */
@@ -147,5 +193,9 @@ final class ImagesLoader {
 }
 
 class NotAllowedImageException extends BadRequestException {
+
+}
+
+class NotAllowedLoadImageException extends BadRequestException {
 
 }
