@@ -96,12 +96,6 @@ class ThumbnailExtension extends CompilerExtension {
 			);
 			$imagesLoader->addSetup('addStorage', [$name, $this->prefix('@storage.' . $name)]);
 		}
-
-		// Register template helper for ImagesLoader
-		$builder->addDefinition($this->prefix('helpers'))
-			->setClass('NasExt\Thumbnail\Templating\Helpers')
-			->setFactory($this->prefix('@linkGenerator') . '::createTemplateHelpers')
-			->setInject(FALSE);
 	}
 
 	/**
@@ -115,11 +109,9 @@ class ThumbnailExtension extends CompilerExtension {
 		// Get extension configuration
 		$config = $this->getConfig($this->defaults);
 
-		// Install extension latte macros
-		$latteFactory = $builder->getDefinition($builder->getByType('\Nette\Bridges\ApplicationLatte\ILatteFactory') ?: 'nette.latteFactory');
-
-		$latteFactory->addSetup('NasExt\Thumbnail\Latte\Macros::install(?->getCompiler())', ['@self'])
-			->addSetup('addFilter', ['imageLink', [$this->prefix('@helpers'), 'imageLink']]);
+		$latteFactory = $builder->getDefinition('latte.latteFactory');
+		$latteFactory->addSetup('addProvider', ['linkGenerator', $this->prefix('@linkGenerator')]);
+		$latteFactory->addSetup('?->onCompile[] = function($engine) { \NasExt\Thumbnail\Latte\Macros::install($engine->getCompiler()); }', ['@self']);
 
 		if ($config['prependRoutesToRouter']) {
 			$router = $builder->getByType('Nette\Application\IRouter');

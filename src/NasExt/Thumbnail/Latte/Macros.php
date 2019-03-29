@@ -49,12 +49,10 @@ class Macros extends MacroSet {
 		$absolute = substr($node->args, 0, 2) === '//' ? '//' : '';
 		$args = $absolute ? substr($node->args, 2) : $node->args;
 		return $writer->write(
-			'echo %escape(
+		 
+			' echo %escape(
 				%modify(
-					call_user_func(
-							($template && method_exists($template, "imageLink") ? $template->imageLink : $this->filters->imageLink),
-							[' . $args . ']
-						)
+					$this->global->linkGenerator->link(%node.array)
 				)
 			)'
 		);
