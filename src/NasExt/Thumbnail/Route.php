@@ -31,7 +31,7 @@ class Route extends \Nette\Application\Routers\Route {
 		$this->imagesLoader = $imagesLoader;
 
 		$defaults['presenter'] = 'Nette:Micro';
-		$defaults['callback'] = $this;
+		$defaults['callback'] = \Closure::fromCallable($this);
 		parent::__construct($mask, $defaults, $flags);
 	}
 
